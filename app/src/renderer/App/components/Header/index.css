@@ -1,0 +1,32 @@
+header {
+  display: flex;
+  align-items: center;
+  color: rgb(238, 215, 255);
+  background-color: #222244;
+}
+
+header h1 {
+  font-size: 13px;
+  font-weight: 600;
+  margin-left: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+.app-header ul {
+  display: flex;
+  width: 100%;
+  margin: 0;
+  padding: 5px;
+  padding-right: 10px;
+  justify-content: flex-end;
+}
+
+.app-header ul li {
+  list-style: none;
+  margin: 0 5px;
+}
+
+.app-header a {
+  text-decoration: none;
+}
