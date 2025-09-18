@@ -77,7 +77,7 @@ const SwitchDatePicker = () => {
 
   useEffect(() => {
     // min
-    fetch("http://localhost:4010/trades/select/pnl", {
+    fetch("http://localhost:4010/trades/pnl", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ filterOptions: { mode: "PnL", limit: 1, order: "ASC" }}),
@@ -93,7 +93,7 @@ const SwitchDatePicker = () => {
       .catch((e) => console.log(e));
 
     // max
-    fetch("http://localhost:4010/trades/select/pnl", {
+    fetch("http://localhost:4010/trades/pnl", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ filterOptions: { mode: "PnL", limit: 1, order: "DESC" }}),
