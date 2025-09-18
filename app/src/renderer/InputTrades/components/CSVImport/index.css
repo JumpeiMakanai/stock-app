@@ -1,0 +1,30 @@
+.csv-outer {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 99;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgba(50, 50, 80, 0.5);
+}
+
+.csv-drag-drop {
+  position: absolute;
+  display: flex;
+  width: 60%;
+  height: 60%;
+  font-weight: bold;
+  background-color: #efeff5;
+  color: #99b;
+  top: 20%;
+  left: 20%;
+  border: #99b solid 3px;
+  border-radius: 10px;
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+}
+
+.csv-drag-drop p {
+  margin: auto;
+}
