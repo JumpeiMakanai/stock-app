@@ -95,7 +95,7 @@ export const HistoryList = () => {
   const tradeSyncDispatch = useTradeSyncDispatch();
 
   useEffect(() => {
-    fetch("http://localhost:4010/trades/select/raw", {
+    fetch("http://localhost:4010/trades/raw", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -134,7 +134,7 @@ export const HistoryList = () => {
    * @param tradeId 選択された取引id
    */
   const selectTrade = (tradeId: string) => {
-    fetch("http://localhost:4010/trades/select/raw", {
+    fetch("http://localhost:4010/trades/raw", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ filterOptions: { mode: "raw", id: tradeId } }),

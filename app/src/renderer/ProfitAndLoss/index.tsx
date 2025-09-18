@@ -34,7 +34,7 @@ const GainAndLossChild = () => {
   const eChartsDispatch = useEChartsOptionDispatch();
 
   useEffect(() => {
-    fetch("http://localhost:4010/trades/select/pnl", {
+    fetch("http://localhost:4010/trades/pnl", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ filterOptions: { mode: "PnL" } }),
