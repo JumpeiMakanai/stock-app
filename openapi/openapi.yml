@@ -1,0 +1,378 @@
+openapi: 3.0.0
+info:
+  title: Stock App API
+  version: 1.0.0
+  description: API documentation for the Stock App
+servers:
+  - url: http://localhost:4010
+paths:
+  /trades:
+    put:
+      summary: insert trade records
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TradeInsert'
+      responses:
+        '200':
+          description: insert comp
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+
+  /trades/raw:
+    post:
+      summary: Select trade records (raw)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SelectRawRequest'
+            examples:
+              raw:
+                summary: raw モードの検索
+                value:
+                  filterOptions:
+                    mode: raw
+                    limit: 50
+                    order: DESC
+                    filter:
+                      symbol: "7203"
+                      period1: 1739884110746
+                      period2: 1758200877341
+      responses:
+        '200':
+          description: A list of raw trade records
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SelectRowResponses'
+              examples:
+                rawResult:
+                  $ref: '#/components/examples/SelectTradesResponseRawArray'
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+
+  /trades/pnl:
+    post:
+      summary: Select trade records (PnL)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SelectPnLRequest'
+            examples:
+              pnl:
+                summary: PnL モードの検索
+                value:
+                  filterOptions:
+                    mode: PnL
+                    filter:
+                      period1: 1739884110746
+                      symbol: "7203"
+      responses:
+        '200':
+          description: A list of PnL trade records
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SelectPnLResponses'
+              examples:
+                pnlResult:
+                  $ref: '#/components/examples/SelectTradesResponsePnLArray'
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+
+
+components:
+  schemas:
+    SelectTradesRequest:
+      type: object
+      required: [filterOptions]
+      properties:
+        filterOptions:
+          allOf:
+            - $ref: '#/components/schemas/ModeFilterOptions'
+            - $ref: '#/components/schemas/BaseFilterOptions'
+
+    # 新規: /raw 専用
+    SelectRawRequest:
+      type: object
+      required: [filterOptions]
+      properties:
+        filterOptions:
+          allOf:
+            - type: object
+              required: [mode]
+              properties:
+                mode:
+                  type: string
+                  enum: [raw]
+            - $ref: '#/components/schemas/BaseFilterOptions'
+
+    # 新規: /pnl 専用
+    SelectPnLRequest:
+      type: object
+      required: [filterOptions]
+      properties:
+        filterOptions:
+          allOf:
+            - type: object
+              required: [mode]
+              properties:
+                mode:
+                  type: string
+                  enum: [PnL]
+            - $ref: '#/components/schemas/BaseFilterOptions'
+
+    ModeFilterOptions:
+      oneOf:
+        - type: object
+          required: [mode]
+          properties:
+            mode:
+              type: string
+              enum: [raw]
+        - type: object
+          required: [mode]
+          properties:
+            mode:
+              type: string
+              enum: [PnL]
+
+    BaseFilterOptions:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 履歴のid。指定した場合、filterは無視される
+        limit:
+          type: number
+          description: 取得するレコードの数
+        order:
+          type: string
+          enum: [ASC, DESC]
+          description: 日時でソート
+        filter:
+          type: object
+          properties:
+            period1:
+              type: integer
+              format: int64
+              description: 期間開始（UNIX秒）
+            period2:
+              type: integer
+              format: int64
+              description: 期間終了（未指定時は period1〜今日）
+            symbol:
+              type: string
+              description: 銘柄コード
+            tradeType:
+              $ref: '#/components/schemas/TradeType'
+            holdType:
+              $ref: '#/components/schemas/HoldType'
+            price:
+              type: object
+              required: [Lowest, Highest]
+              properties:
+                Lowest:
+                  type: number
+                Highest:
+                  type: number
+            place:
+              type: string
+              description: 取引所
+            businessCode:
+              type: string
+              description: 業種コード
+
+    TradeType:
+      type: string
+      description: 取引区分
+      enum:
+        - 現物買
+        - 現物売
+        - 信用新規買
+        - 信用新規売
+        - 信用返済買
+        - 信用返済売
+
+    HoldType:
+      type: string
+      description: 預かり区分
+      enum:
+        - 一般
+        - 特定
+        - NISA
+    
+    SelectRowResponses:
+      type: array
+      items:
+        allOf:
+          - type: object
+            properties:
+              holdType:
+                $ref: '#/components/schemas/HoldType'
+              price:
+                type: number
+              restQuantity:
+                type: number
+          - $ref: '#/components/schemas/TradeBaseResponses'
+
+    SelectPnLResponses:
+      type: array
+      items:
+        allOf:
+          - type: object
+            properties:
+              date0:
+                oneOf:
+                  - type: string
+                  - type: number
+              newTradePrice:
+                type: number
+              repayTradePrice:
+                type: number
+          - $ref: '#/components/schemas/TradeBaseResponses'
+    
+    TradeBaseResponses:
+      type: object
+      properties:
+        businessTypeCode:
+          type: string
+        businessTypeName:
+          type: string
+        company:
+          type: string
+        tradeType:
+          $ref: '#/components/schemas/TradeType'
+        date:
+          oneOf:
+            - type: string
+            - type: number
+        fee:
+          type: number
+        id:
+          type: string
+        market:
+          type: string
+        place:
+          type: string
+          enum: ['東証', '札証', '福証', '名証']
+        placeYF:
+          type: string
+          enum: ['.T', '.S', '.F', '.N']
+        quantity: 
+          type: number
+        restQuantity:
+          type: number
+        symbol:
+          type: string
+        tax:
+          type: number
+    
+    TradeInsert:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+          date:
+            type: number
+          symbol:
+            type: string
+          tradeType:
+            $ref: '#/components/schemas/TradeType'
+          holdType:
+            $ref: '#/components/schemas/HoldType'
+          quantity:
+            type: number
+          restQuantity:
+            type: number
+          price:
+            type: number
+          fee:
+            type: number
+          tax:
+            type: number
+
+  examples:
+    SelectTradesResponseRawArray:
+      summary: raw の配列
+      value:
+        - id: "t_001"
+          date: 1739884110746
+          symbol: "7203"
+          tradeType: "現物買"
+          holdType: "特定"
+          quantity: 100
+          restQuantity: 100
+          price: 1500
+          fee: 0
+          tax: 0
+          place: "東証"
+          placeYF: ".T"
+          market: "プライム"
+          businessTypeCode: "7200"
+          businessTypeName: "輸送用機器"
+        - id: "t_002"
+          date: 1700050000
+          symbol: "7203"
+          tradeType: "現物売"
+          holdType: "特定"
+          quantity: 100
+          restQuantity: 0
+          price: 1600
+          fee: 0
+          tax: 0
+          place: "東証"
+          placeYF: ".T"
+          market: "プライム"
+          businessTypeCode: "7200"
+          businessTypeName: "輸送用機器"
+
+    SelectTradesResponsePnLArray:
+      summary: PnL の配列
+      value:
+        - id: "t_010"
+          date: 1739884110746
+          date0: 1749884110746
+          symbol: "7203"
+          company: "トヨタ自動車"
+          tradeType: "現物売"
+          quantity: 100
+          fee: 0
+          tax: 0
+          place: "東証"
+          placeYF: ".T"
+          market: "プライム"
+          businessTypeCode: "7200"
+          businessTypeName: "輸送用機器"
+          newTradePrice: 1500
+          repayTradePrice: 1600
+        - id: "t_011"
+          date: 1741884110746
+          date0: 1750884110746
+          symbol: "7203"
+          company: "トヨタ自動車"
+          tradeType: "現物売"
+          quantity: 200
+          fee: 0
+          tax: 0
+          place: "東証"
+          placeYF: ".T"
+          market: "プライム"
+          businessTypeCode: "7200"
+          businessTypeName: "輸送用機器"
+          newTradePrice: 1400
+          repayTradePrice: 1380

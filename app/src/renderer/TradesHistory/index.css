@@ -1,0 +1,64 @@
+.trade-history-container {
+  height: calc(100vh - 38px);
+  overflow: hidden;
+}
+
+/* スクロールバーを非表示 */
+.trade-history-container::-webkit-scrollbar {
+  height: 0;
+  width: 0;
+}
+
+.table-container {
+  height: calc(100vh - 62px);
+  direction: rtl;
+  background-color: #222244;
+  border: 0;
+  overflow: auto;
+}
+
+.charts-outer {
+  color: white;
+  width: calc(100vw - 302px);
+  height: calc(100vh - 38px);
+  background-color: #2d2b55;
+}
+
+.trade-details {
+  width: calc(100vw - 302px);
+  height: 116px;
+  overflow: auto;
+}
+
+.trade-details table {
+  border-spacing: 0;
+  width: calc(100vw - 302px);
+}
+
+.trade-details th {
+  padding: 0;
+  background-color: #1e1e3f;
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.trade-details td {
+  font-size: 12px;
+  font-weight: 300;
+}
+
+.trade-details th,
+.trade-details td {
+  padding: 2px 4px;
+}
+
+.interval-select-outer {
+  height: 150px;
+}
+
+.interval-select {
+  height: 22px;
+  margin-top: 2px;
+  margin-left: 10px;
+  border: 0;
+}
