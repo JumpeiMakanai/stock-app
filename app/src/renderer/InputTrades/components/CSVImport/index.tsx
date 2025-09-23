@@ -2,6 +2,7 @@ import { Button } from '@mui/material'
 
 import { csvReader } from './csvReader'
 import './index.css'
+import type { TradeRecord } from 'src/types/TradeType'
 
 export const CSVInmport = ({
   setResultMessage,

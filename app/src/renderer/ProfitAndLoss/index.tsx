@@ -34,10 +34,10 @@ const GainAndLossChild = () => {
   const eChartsDispatch = useEChartsOptionDispatch();
 
   useEffect(() => {
-    fetch("http://localhost:4010/trades/pnl", {
+    fetch("http://localhost:4010/trades/search/pnl", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ filterOptions: { mode: "PnL" } }),
+      body: JSON.stringify({}),
     })
       .then(async (res) => {
         if (!res.ok) {

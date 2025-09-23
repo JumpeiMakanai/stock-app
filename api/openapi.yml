@@ -1,3 +1,5 @@
+# docker run --rm -it -p 4010:4010 -v $PWD:/tmp stoplight/prism:4 mock -h 0.0.0.0 /tmp/openapi.yml
+
 openapi: 3.1.0
 info:
   title: Stock App API
@@ -69,7 +71,7 @@ paths:
 
     patch:
       summary: Update a trade (partial)
-      description: **部分更新**。送られた項目だけを更新。
+      description: 部分更新。送られた項目だけを更新。
       requestBody:
         required: true
         content:
@@ -105,19 +107,17 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SelectRawRequest'
+              $ref: '#/components/schemas/BaseFilterOptions'
             examples:
               raw:
                 summary: raw モードの検索
                 value:
-                  filterOptions:
-                    mode: raw
-                    limit: 50
-                    order: DESC
-                    filter:
-                      symbol: "7203"
-                      period1: 1739884110746
-                      period2: 1758200877341
+                  limit: 50
+                  order: DESC
+                  filter:
+                    symbol: "7203"
+                    period1: 1739884110746
+                    period2: 1758200877341
       responses:
         '200':
           description: A list of raw trade records
@@ -141,16 +141,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SelectPnLRequest'
+              $ref: '#/components/schemas/BaseFilterOptions'
             examples:
               pnl:
                 summary: PnL モードの検索
                 value:
-                  filterOptions:
-                    mode: PnL
-                    filter:
-                      period1: 1739884110746
-                      symbol: "7203"
+                  filter:
+                    period1: 1739884110746
+                    symbol: "7203"
       responses:
         '200':
           description: A list of PnL trade records
@@ -178,53 +176,53 @@ components:
 
   schemas:
     # 既存の Select* / BaseFilterOptions / TradeType / HoldType / SelectRowResponses / SelectPnLResponses / TradeBaseResponses はそのまま
-    SelectTradesRequest:
-      type: object
-      required: [filterOptions]
-      properties:
-        filterOptions:
-          allOf:
-            - $ref: '#/components/schemas/ModeFilterOptions'
-            - $ref: '#/components/schemas/BaseFilterOptions'
+    # SelectTradesRequest:
+    #   type: object
+    #   required: [filterOptions]
+    #   properties:
+    #     filterOptions:
+    #       allOf:
+    #         - $ref: '#/components/schemas/ModeFilterOptions'
+    #         - $ref: '#/components/schemas/BaseFilterOptions'
 
-    SelectRawRequest:
-      type: object
-      required: [filterOptions]
-      properties:
-        filterOptions:
-          allOf:
-            - type: object
-              required: [mode]
-              properties:
-                mode:
-                  type: string
-                  enum: [raw]
-            - $ref: '#/components/schemas/BaseFilterOptions'
+    # SelectRawRequest:
+    #   type: object
+    #   required: [filterOptions]
+    #   properties:
+    #     filterOptions:
+    #       allOf:
+    #         - type: object
+    #           required: [mode]
+    #           properties:
+    #             mode:
+    #               type: string
+    #               enum: [raw]
+    #         - $ref: '#/components/schemas/BaseFilterOptions'
 
-    SelectPnLRequest:
-      type: object
-      required: [filterOptions]
-      properties:
-        filterOptions:
-          allOf:
-            - type: object
-              required: [mode]
-              properties:
-                mode:
-                  type: string
-                  enum: [PnL]
-            - $ref: '#/components/schemas/BaseFilterOptions'
+    # SelectPnLRequest:
+    #   type: object
+    #   required: [filterOptions]
+    #   properties:
+    #     filterOptions:
+    #       allOf:
+    #         - type: object
+    #           required: [mode]
+    #           properties:
+    #             mode:
+    #               type: string
+    #               enum: [PnL]
+    #         - $ref: '#/components/schemas/BaseFilterOptions'
 
-    ModeFilterOptions:
-      oneOf:
-        - type: object
-          required: [mode]
-          properties:
-            mode: { type: string, enum: [raw] }
-        - type: object
-          required: [mode]
-          properties:
-            mode: { type: string, enum: [PnL] }
+    # ModeFilterOptions:
+    #   oneOf:
+    #     - type: object
+    #       required: [mode]
+    #       properties:
+    #         mode: { type: string, enum: [raw] }
+    #     - type: object
+    #       required: [mode]
+    #       properties:
+    #         mode: { type: string, enum: [PnL] }
 
     BaseFilterOptions:
       type: object

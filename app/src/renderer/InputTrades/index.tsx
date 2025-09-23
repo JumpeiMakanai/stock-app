@@ -116,7 +116,7 @@ const NewAddChild = () => {
 
     const trades = flatTrades();
     fetch("http://localhost:4010/trades", {
-      method: "PUT",
+      method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(trades),
     })

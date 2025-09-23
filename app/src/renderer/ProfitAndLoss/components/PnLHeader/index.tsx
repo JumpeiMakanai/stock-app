@@ -77,10 +77,10 @@ const SwitchDatePicker = () => {
 
   useEffect(() => {
     // min
-    fetch("http://localhost:4010/trades/pnl", {
+    fetch("http://localhost:4010/trades/search/pnl", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ filterOptions: { mode: "PnL", limit: 1, order: "ASC" }}),
+      body: JSON.stringify({ mode: "PnL", limit: 1, order: "ASC" }),
     })
       .then((res) => res.json())
       .then((trades: TradeRecordPnL[]) => {
@@ -93,10 +93,10 @@ const SwitchDatePicker = () => {
       .catch((e) => console.log(e));
 
     // max
-    fetch("http://localhost:4010/trades/pnl", {
+    fetch("http://localhost:4010/trades/search/pnl", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ filterOptions: { mode: "PnL", limit: 1, order: "DESC" }}),
+      body: JSON.stringify( { mode: "PnL", limit: 1, order: "DESC" }),
     })
       .then((res) => res.json())
       .then((trades: TradeRecordPnL[]) => {
